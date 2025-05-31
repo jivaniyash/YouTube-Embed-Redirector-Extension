@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Embed Redirector",
+  "version": "1.0",
+  "description": "Redirect YouTube watch pages to embed video format.",
+  "permissions": ["scripting"],
+  "host_permissions": ["*://www.youtube.com/watch*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "YouTube Embed Redirector"
+  }
+}
