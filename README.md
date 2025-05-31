@@ -6,10 +6,11 @@ This project helps a workaround for YouTube viewers to redirect the YouTube defa
 
 ### Steps to activate the Extension
 1. Pull this repository or Download files as a Zip file & unzip it.
-2. Open the Browser's Extension Page. For Google Chrome - Please type in the URL bar - `chrome://extensions`.  
-3. Click on the `Load Unpacked` Button.
-4. Choose the directory where this git repository is downloaded or cloned.
-5. Ignore any errors in the extension page.
+2. Open the Browser's Extension Page. For Google Chrome - Please type in the URL bar - `chrome://extensions`.
+3. Turn on `Developer Mode` toggle button, if turned off.  
+4. Click on the `Load Unpacked` Button.
+5. Choose the directory where this git repository is downloaded or cloned.
+6. Ignore any errors in the extension page.
 
 ### Usage
 1. Open the `https://www.youtube.com/` and choose the video you want to play
