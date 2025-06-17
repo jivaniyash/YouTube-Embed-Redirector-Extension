@@ -23,6 +23,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         }
 
         if (embedUrl) {
+          embedUrl += "&autoplay=1";
           window.location.replace(embedUrl);
         }
       }
