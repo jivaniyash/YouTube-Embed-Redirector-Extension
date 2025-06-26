@@ -1,32 +1,56 @@
+function parseTimeToSeconds(t) {
+  if (!t) return null;
+
+  // If just a number (seconds), return as is
+  if (/^\d+$/.test(t)) return parseInt(t);
+
+  // Match formats like 1h2m3s, 2m3s, 90s
+  const regex = /(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/;
+  const match = t.match(regex);
+
+  if (!match) return null;
+
+  const hours = parseInt(match[1]) || 0;
+  const minutes = parseInt(match[2]) || 0;
+  const seconds = parseInt(match[3]) || 0;
+
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === "complete" && tab.url.includes("youtube.com/watch")) {
-    chrome.scripting.executeScript({
-      target: { tabId: tabId },
-      func: () => {
-        const url = new URL(window.location.href);
-        const videoId = url.searchParams.get("v");
-        const playlistId = url.searchParams.get("list");
-        const start = url.searchParams.get("t") || url.searchParams.get("start");
+    const url = new URL(tab.url);
+    const videoId = url.searchParams.get("v");
+    const playlistId = url.searchParams.get("list");
 
-        let embedUrl = "";
+    // parse t=1h2m3s or t=120 or start=120
+    const rawT = url.searchParams.get("t");
+    const rawStart = url.searchParams.get("start");
+    const end = url.searchParams.get("end");
 
-        if (playlistId && videoId) {
-          // Video in Playlist
-          embedUrl = `https://www.youtube.com/embed/${videoId}?list=${playlistId}&rel=0`;
-        } else if (videoId) {
-          // Video only
-          embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0`;
-        }
+    const start = parseTimeToSeconds(rawT) || parseInt(rawStart) || null;
 
-        if (start && embedUrl) {
-          embedUrl += `&start=${start}`;
-        }
+    let embedUrl = "";
 
-        if (embedUrl) {
-          embedUrl += "&autoplay=1";
-          window.location.replace(embedUrl);
-        }
-      }
-    });
+    if (playlistId && videoId) {
+      // Video in Playlist
+      embedUrl = `https://www.youtube.com/embed/${videoId}?list=${playlistId}&rel=0`;
+    } else if (videoId) {
+      // Video only
+      embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0`;
+    }
+
+    if (start !== null) {
+      embedUrl += `&start=${start}`;
+    }
+
+    if (end) {
+      embedUrl += `&end=${end}`;
+    }
+
+    if (embedUrl) {
+      embedUrl += "&autoplay=1";
+      chrome.tabs.update(tabId, { url: embedUrl });
+    }
   }
 });
